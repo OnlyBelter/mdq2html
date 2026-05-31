@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kahoot! 课堂互动：当代数遇上几何（小学版）</title>
+    <style>
+        :root {
+            --kahoot-red: #e21b3c;
+            --kahoot-blue: #1368ce;
+            --kahoot-yellow: #d89e00;
+            --kahoot-green: #26890c;
+            --bg-color: #f2f2f2;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header { text-align: center; max-width: 800px; margin-bottom: 30px; }
+        .header h1 { color: var(--kahoot-blue); margin-bottom: 10px; }
+        .quiz-container { width: 100%; max-width: 800px; }
+        .question-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        .question-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--kahoot-blue);
+            padding-left: 15px;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            border: none;
+            border-radius: 8px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            text-align: left;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .option-btn.red { background-color: var(--kahoot-red); }
+        .option-btn.blue { background-color: var(--kahoot-blue); }
+        .option-btn.yellow { background-color: var(--kahoot-yellow); }
+        .option-btn.green { background-color: var(--kahoot-green); }
+        
+        .feedback-box {
+            background-color: #eef5fc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid var(--kahoot-green);
+        }
+        .hint-title { font-weight: bold; color: #555; margin-bottom: 5px; }
+        .feedback-box a { color: var(--kahoot-blue); text-decoration: none; font-weight: bold; }
+        .feedback-box a:hover { text-decoration: underline; }
+        .ans-tag { color: var(--kahoot-green); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>📊 当代数遇上几何（极简免拦截版）</h1>
+        <p>适合本地浏览器直接双击打开，随开随用！</p>
+    </div>
+
+    <div class="quiz-container">
+        <div class="question-card">
+            <div class="question-title">3. 在数轴上，方程 x = 3 代表什么？</div>
+            <div class="options-grid">
+                <button class="option-btn red">A. 整个数轴</button>
+                <button class="option-btn blue">B. 坐标为 3 的那一个“点”</button>
+                <button class="option-btn yellow">C. 一条长长的“直线”</button>
+                <button class="option-btn green">D. 一个三角形</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 正确答案：<span class="ans-tag">B</span></div>
+                <div class="hint-title">💡 启发思考：</div>
+                <div>数轴是一维的空间，x 固定等于一个数，就锁定了一个特定的位置。想看它在二维平面上的样子吗？点击查看 <a href="https://www.desmos.com/calculator/qsebxznn8h" target="_blank">Desmos 互动动态图像</a>。</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

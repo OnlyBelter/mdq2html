@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kahoot! 课堂互动：当代数遇上几何（小学版）</title>
+    <style>
+        :root {
+            --kahoot-red: #e21b3c;
+            --kahoot-blue: #1368ce;
+            --kahoot-yellow: #d89e00;
+            --kahoot-green: #26890c;
+            --bg-color: #f2f2f2;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            justify-content: center;
+        }
+        .quiz-container {
+            width: 100%;
+            max-width: 700px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+        /* 核心：隐藏不需要显示的页面 */
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .progress-bar {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .question-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .option-btn {
+            border: none;
+            border-radius: 8px;
+            padding: 18px 20px;
+            font-size: 1.1rem;
+            color: white;
+            cursor: pointer;
+            text-align: left;
+            font-weight: bold;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        }
+        .option-btn.red { background-color: var(--kahoot-red); }
+        .option-btn.blue { background-color: var(--kahoot-blue); }
+        .option-btn.yellow { background-color: var(--kahoot-yellow); }
+        .option-btn.green { background-color: var(--kahoot-green); }
+        
+        .feedback-box {
+            background-color: #eef5fc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid var(--kahoot-blue);
+            display: none;
+        }
+        .hint-title { font-weight: bold; color: #333; margin-bottom: 5px; }
+        .feedback-box a { color: var(--kahoot-blue); text-decoration: none; font-weight: bold; }
+        .feedback-box a:hover { text-decoration: underline; }
+        
+        .next-btn {
+            display: none;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .next-btn:hover { background-color: #555; }
+
+        /* 汇总页面样式 */
+        .summary-card { text-align: center; }
+        .score-display { font-size: 4rem; font-weight: bold; color: var(--kahoot-blue); margin: 20px 0; }
+        .restart-btn {
+            background-color: var(--kahoot-green);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        
+        <div class="page active" id="p1">
+            <div class="progress-bar">第 1 / 12 题</div>
+            <div class="question-title">1. 如果用字母 x 代表一个正方形的边长，那么这个正方形的周长可以写成什么？</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(1, false, this)">▲ A. x + 4</button>
+                <button class="option-btn blue" onclick="checkAnswer(1, true, this)">■ B. 4x</button>
+                <button class="option-btn yellow" onclick="checkAnswer(1, false, this)">● C. x - 4</button>
+                <button class="option-btn green" onclick="checkAnswer(1, false, this)">◆ D. x × x</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>正方形有 4 条一模一样的边，周长就是把这 4 条边加起来。所以是 4 乘以 x（简写为 4x）。</div>
+            </div>
+            <button class="next-btn" onclick="nextPage(1)">下一题 ➔</button>
+        </div>
+
+        <div class="page" id="p2">
+            <div class="progress-bar">第 2 / 12 题</div>
+            <div class="question-title">2. 丁丁画了一个长方形，长是 8 厘米，宽是 x 厘米，面积是 24 平方厘米。下面哪个方程能帮我们算出宽是多少？</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(2, false, this)">▲ A. 8 + x = 24</button>
+                <button class="option-btn blue" onclick="checkAnswer(2, true, this)">■ B. 8x = 24</button>
+                <button class="option-btn yellow" onclick="checkAnswer(2, false, this)">● C. 8 ÷ x = 24</button>
+                <button class="option-btn green" onclick="checkAnswer(2, false, this)">◆ D. 2 × (8 + x) = 24</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>长方形的面积公式是：长 × 宽 = 面积。因此将数字代入就是 8 × x = 24。</div>
+            </div>
+            <button class="next-btn" onclick="nextPage(2)">下一题 ➔</button>
+        </div>
+
+        <div class="page" id="p3">
+            <div class="progress-bar">第 3 / 12 题</div>
+            <div class="question-title">3. 在数轴上，方程 x = 3 代表什么？</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(3, false, this)">▲ A. 整个数轴</button>
+                <button class="option-btn blue" onclick="checkAnswer(3, true, this)">■ B. 坐标为 3 的那一个“点”</button>
+                <button class="option-btn yellow" onclick="checkAnswer(3, false, this)">● C. 一条长长的“直线”</button>
+                <button class="option-btn green" onclick="checkAnswer(3, false, this)">◆ D. 一个三角形</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>数轴是一维的空间，x 固定等于一个数，就锁定了一个特定的位置。想看它在二维平面上的样子吗？点击查看 <a href="https://www.desmos.com/calculator/qsebxznn8h" target="_blank">Desmos 互动动态图像</a>。</div>
+            </div>
+            <button class="next-btn" onclick="nextPage(3)">下一题 ➔</button>
+        </div>
+
+        <div class="page" id="p4">
+            <div class="progress-bar">第 4 / 12 题</div>
+            <div class="question-title">4. 如果我们在格点图上画图，x 代表横向格子数，y 代表纵向格子数。方程 y = x 画出来会是什么图形？</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(4, false, this)">▲ A. 一个圆圈</button>
+                <button class="option-btn blue" onclick="checkAnswer(4, true, this)">■ B. 一条斜斜向上的直线</button>
+                <button class="option-btn yellow" onclick="checkAnswer(4, false, this)">● C. 一条水平的横线</button>
+                <button class="option-btn green" onclick="checkAnswer(4, false, this)">◆ D. 一条垂直的竖线</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>试着连线：当 x=1 时 y=1；x=2 时 y=2……把这些横纵相等的点在纸上连起来，就是一条对角斜线。</div>
+            </div>
+            <button class="next-btn" onclick="nextPage(4)">下一题 ➔</button>
+        </div>
+
+        <div class="page" id="p5">
+            <div class="progress-bar">第 5 / 12 题</div>
+            <div class="question-title">5. 脑补思考：如果把方程 x + y = 6 所有的整数解（比如 1和5，2和4，3和3）画在坐标图上，这些点会排列成什么形状？</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(5, false, this)">▲ A. 一个弯弯的月亮</button>
+                <button class="option-btn blue" onclick="checkAnswer(5, true, this)">■ B. 一条笔直的直线</button>
+                <button class="option-btn yellow" onclick="checkAnswer(5, false, this)">● C. 一个正方形的四个角</button>
+                <button class="option-btn green" onclick="checkAnswer(5, false, this)">◆ D. 杂乱无章的星星点点</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>在数学里，像这样未知数没有乘方（一次方）的简单相加减关系，在图形上往往对应着一条规律笔直的“直线”。</div>
+            </div>
+            <button class="next-btn" onclick="nextPage(5)">下一题 ➔</button>
+        </div>
+
+        <div class="page" id="p6">
+            <div class="progress-bar">第 6 / 12 题</div>
+            <div class="question-title">6. 如果“一个二元一次方程”在图形上代表“一条直线”，那么“一个二元一次方程组”在图形上通常代表什么？</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(6, true, this)">▲ A. 两条直线的交点</button>
+                <button class="option-btn blue" onclick="checkAnswer(6, false, this)">■ B. 一个巨大的圆形</button>
+                <button class="option-btn yellow" onclick="checkAnswer(6, false, this)">● C. 两条永远不碰面的平行线</button>
+                <button class="option-btn green" onclick="checkAnswer(6, false, this)">◆ D. 一个三角形</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>方程组要求同时满足两个方程的关系，反映在图形上，就是寻找两条直线共同拥有的那个唯一的“公共十字交点”。</div>
+            </div>
+            <button class="next-btn" onclick="nextPage(6)">下一题 ➔</button>
+        </div>
+
+        <div class="page" id="p7">
+            <div class="progress-bar">第 7 / 12 题</div>
+            <div class="question-title">7. 如果我们在纸上画了一条直线，发现它们“平行”（永远不会相交）。这在方程组里代表什么意思？</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(7, false, this)">▲ A. 方程组有唯一的答案</button>
+                <button class="option-btn blue" onclick="checkAnswer(7, false, this)">■ B. 方程组有无限多个答案</button>
+                <button class="option-btn yellow" onclick="checkAnswer(7, true, this)">● C. 方程组没有答案（无解）</button>
+                <button class="option-btn green" onclick="checkAnswer(7, false, this)">◆ D. 画图的人尺子坏了</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>既然图形上平行、没有任何相交点，就说明我们在数字上永远找不到一个能同时满足两边的公共数字答案，即“无解”。</div>
+            </div>
+            <button class="next-btn" onclick="nextPage(7)">下一题 ➔</button>
+        </div>
+
+        <div class="page" id="p8">
+            <div class="progress-bar">第 8 / 12 题</div>
+            <div class="question-title">8. 如果两条直线完全重合（叠加变成了同一条线），这在方程组里代表什么？</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(8, false, this)">▲ A. 它们打架了</button>
+                <button class="option-btn blue" onclick="checkAnswer(8, false, this)">■ B. 方程组没有答案</button>
+                <button class="option-btn yellow" onclick="checkAnswer(8, false, this)">● C. 方程组有唯一的答案</button>
+                <button class="option-btn green" onclick="checkAnswer(8, true, this)">◆ D. 方程组有无限多个答案（每一个点都是交点）</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>完全重合意味着它们处处相交，这条线上的每一个密密麻麻的点都是同时满足两者的解，因此有无限多个答案。</div>
+            </div>
+            <button class="next-btn" onclick="nextPage(8)">下一题 ➔</button>
+        </div>
+
+        <div class="page" id="p9">
+            <div class="progress-bar">第 9 / 12 题</div>
+            <div class="question-title">9. 有一根 20 厘米长的铁丝，小明把它围成了一个长是 x 厘米、宽是 y 厘米的长方形。下面哪个方程正确表达了周长关系？</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(9, false, this)">▲ A. x + y = 20</button>
+                <button class="option-btn blue" onclick="checkAnswer(9, true, this)">■ B. 2(x + y) = 20</button>
+                <button class="option-btn yellow" onclick="checkAnswer(9, false, this)">● C. x × y = 20</button>
+                <button class="option-btn green" onclick="checkAnswer(9, false, this)">◆ D. 2x + y = 20</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>长方形有两条长和两条宽，单独的 x+y 只是周长的一半，全部加起来 2×(x+y) 才是铁丝的总长度。</div>
+            </div>
+            <button class="next-btn" onclick="nextPage(9)">下一题 ➔</button>
+        </div>
+
+        <div class="page" id="p10">
+            <div class="progress-bar">第 10 / 12 题</div>
+            <div class="question-title">10. 接上题，如果老师补充了一个几何条件：“这个长方形的长比宽多 2 厘米”（x - y = 2）。方程组建立后的几何意义是什么？</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(10, true, this)">▲ A. 帮我们在一堆长方形里，准确锁定那一个唯一的长方形</button>
+                <button class="option-btn blue" onclick="checkAnswer(10, false, this)">■ B. 证明长方形其实是圆形的亲戚</button>
+                <button class="option-btn yellow" onclick="checkAnswer(10, false, this)">● C. 让长方形的面积自发变大</button>
+                <button class="option-btn green" onclick="checkAnswer(10, false, this)">◆ D. 没有任何实际意义</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>一个条件（周长20）可以围出无数个长短宽窄不同的长方形，但当两个线索结合形成方程组，就能完美锁定唯一的那一个。</div>
+            </div>
+            <button class="next-btn" onclick="nextPage(10)">下一题 ➔</button>
+        </div>
+
+        <div class="page" id="p11">
+            <div class="progress-bar">第 11 / 12 题</div>
+            <div class="question-title">11. 动脑筋：如果一个正方形的边长 x 扩大到原来的 2 倍，它的面积会变成原来的几倍？（提示：写出面积方程）</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(11, false, this)">▲ A. 2 倍</button>
+                <button class="option-btn blue" onclick="checkAnswer(11, true, this)">■ B. 4 倍</button>
+                <button class="option-btn yellow" onclick="checkAnswer(11, false, this)">● C. 8 倍</button>
+                <button class="option-btn green" onclick="checkAnswer(11, false, this)">◆ D. 保持不变</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>原来的面积是 x·x，现在的边长是 2x，面积就是 (2x)·(2x) = 4·x·x，所以几何面积会随代数平方关系自发扩大 4 倍！</div>
+            </div>
+            <button class="next-btn" onclick="nextPage(11)">下一题 ➔</button>
+        </div>
+
+        <div class="page" id="p12">
+            <div class="progress-bar">第 12 / 12 题</div>
+            <div class="question-title">12. 为什么数学家特别喜欢把“代数式”翻译成“几何图形”？</div>
+            <div class="options-grid">
+                <button class="option-btn red" onclick="checkAnswer(12, false, this)">▲ A. 因为画画比算数更好玩</button>
+                <button class="option-btn blue" onclick="checkAnswer(12, true, this)">■ B. 因为图形可以让我们一眼看清数量之间的“结构和空间关系”</button>
+                <button class="option-btn yellow" onclick="checkAnswer(12, false, this)">● C. 因为图形可以用来把题目涂成彩色</button>
+                <button class="option-btn green" onclick="checkAnswer(12, false, this)">◆ D. 因为古代没有计算器，只能靠画画</button>
+            </div>
+            <div class="feedback-box">
+                <div class="hint-title">💡 启发思考：</div>
+                <div>数形结合是伟大的翻译器！它能把抽象、冰冷的算式符号，变成直观美妙的空间画面，帮人类一目了然看清规律。</div>
+            </div>
+            <button class="next-btn" onclick="showSummary()">提交并看总结 ➔</button>
+        </div>
+
+        <div class="page summary-card" id="p-summary">
+            <h2>🎉 答题挑战完成！</h2>
+            <p>你在“当代数遇上几何”测验中的最终得分是：</p>
+            <div class="score-display"><span id="correct-count">0</span> / 12</div>
+            <p id="evaluation-text" style="font-size: 1.1rem; color: #555; margin-bottom: 25px; font-weight: bold;"></p>
+            <button class="restart-btn" onclick="window.location.reload()">重新挑战 ↺</button>
+        </div>
+
+    </div>
+
+    <script>
+        let totalCorrect = 0;
+
+        // 判断正误函数
+        function checkAnswer(qNum, isCorrect, clickedBtn) {
+            const currentPage = document.getElementById('p' + qNum);
+            const buttons = currentPage.querySelectorAll('.options-grid .option-btn');
+            const feedback = currentPage.querySelector('.feedback-box');
+            const nextButton = currentPage.querySelector('.next-btn');
+
+            // 累计得分
+            if (isCorrect) {
+                totalCorrect++;
+            }
+
+            // 禁用本题所有按钮并染色反馈
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (btn === clickedBtn) {
+                    if (isCorrect) {
+                        btn.style.backgroundColor = 'var(--kahoot-green)';
+                        btn.innerText += " (🎉 答对了！)";
+                    } else {
+                        btn.style.backgroundColor = '#888';
+                        btn.innerText += " (❌ 答错了)";
+                    }
+                } else {
+                    btn.style.opacity = '0.3'; // 未选择的按钮淡化
+                }
+            });
+
+            // 展开解析提示并显示下一题按钮
+            if(feedback) feedback.style.display = 'block';
+            if(nextButton) nextButton.style.display = 'block';
+        }
+
+        // 下一页切换
+        function nextPage(currentNum) {
+            document.getElementById('p' + currentNum).classList.remove('active');
+            document.getElementById('p' + (currentNum + 1)).classList.add('active');
+        }
+
+        // 展示最终结果汇总
+        function showSummary() {
+            document.getElementById('p12').classList.remove('active');
+            document.getElementById('p-summary').classList.add('active');
+            
+            // 写入得分
+            document.getElementById('correct-count').innerText = totalCorrect;
+
+            // 智能评语
+            let evalText = "";
+            if (totalCorrect === 12) {
+                evalText = "太棒了！你是全能数形转换小大师！🌟";
+            } else if (totalCorrect >= 8) {
+                evalText = "非常优秀！你已经能很好地在符号和图形之间自由穿梭了！👍";
+            } else {
+                evalText = "继续努力！多观察生活中的天平与网格，你会发现方程很好玩！💪";
+            }
+            document.getElementById('evaluation-text').innerText = evalText;
+        }
+    </script>
+</body>
+</html>
